@@ -1,0 +1,276 @@
+<!-- Nav Section Begins -->
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary" *ngIf="user">
+  <a class="navbar-brand" href="javascript:void(0)">
+    <img src="assets/sermon.png" style="width:40px;">&nbsp; <b>SerMon</b></a>
+  <div class="navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="javascript:void(0)" (click)="logout()"><b> Logout</b></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!-- Nav Section Ends -->
+
+<!-- Login Section Begins -->
+<div *ngIf="!user">
+  <br><br><br>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">Login</div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" class="form-control" [(ngModel)]="username">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control" [(ngModel)]="password">
+            </div>
+            <p class="text-center text-danger">{{errormsg}}</p>
+            <p class="text-center text-success">{{msg}}</p>
+            <div class="text-center form-group">
+              <button class="btn btn-primary" (click)="login()">Login</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+  </div>
+</div>
+<!-- Login Section Ends -->
+
+<!-- Main Section Begins -->
+<div *ngIf="user">
+  <br><br><br><br>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+        <!-- Detail Card Section Begins -->
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+              <div class="card" *ngIf="servicedetail">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-md-10">
+                      <h4>Service Details</h4>
+                    </div>
+                    <div class="col-md-2 text-right">
+                      <button class="btn btn-primary" (click)="servicedetail='';">Back</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-7">
+                      <h4 class="text-left">Info</h4><br>
+                      <div class="row">
+                        <label class="col-md-3">Name</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-8">{{servicedetail.name}}</div>
+                      </div>
+                      <div class="row">
+                        <label class="col-md-3">Endpoint</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-8"><a href={{servicedetail.endpoint}}>{{servicedetail.endpoint}}</a></div>
+                      </div>
+                      <div class="row">
+                        <label class="col-md-3">Metadata</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-8">{{servicedetail.metadata}}</div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3">Status</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-8">
+                          <i class="fa fa-check-circle text-success" *ngIf="servicedetail.status == 'UP'"></i>
+                          <i class="fa fa-times-circle text-danger" *ngIf="servicedetail.status == 'DOWN'"></i>
+                          {{servicedetail.status}}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-5 ">
+                      <h4 class="text-left">Metrics</h4><br>
+                      <div class="row">
+                        <label class="col-md-4">DNS Time</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">{{servicedetail.metrics.dnsTime.toFixed(2)}} s</div>
+                      </div>
+                      <div class="row">
+                        <label class="col-md-4">Connect Time</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">{{servicedetail.metrics.connectTime.toFixed(2)}} s</div>
+                      </div>
+                      <div class="row">
+                        <label class="col-md-4">TLS Time</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">{{servicedetail.metrics.tlsTime.toFixed(2)}} s</div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-4">Total Time</label>
+                        <div class="col-md-1">:</div>
+                        <div class="col-md-7">{{servicedetail.metrics.totalTime.toFixed(2)}} s</div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row form-group" style="padding:15px;">
+                        <label>Metric</label>
+                        <select [(ngModel)]="gmetric" class="form-control" (change)="loadgraphdata()">
+                          <option value="totalTime">Total Time</option>
+                          <option value="dnsTime">DNS Time</option>
+                          <option value="connectTime">Connect Time</option>
+                          <option value="tlsTime">TLS Time</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-10">
+                      <div class="flex">
+                        <div class="flex-item">
+                          <div style="display: block;">
+                            <canvas baseChart width="200" height="70" [datasets]="lineChartData"
+                              [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors"
+                              [legend]="lineChartLegend" [chartType]="lineChartType" [plugins]="lineChartPlugins"
+                           ></canvas>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-1"></div>
+          </div>
+        </div>
+        <!-- Detail Card Section Ends -->
+
+        <!-- Table Section Begins -->
+        <div *ngIf="!servicedetail" class="row">
+          <h3 class="form-group" style="width:100%">Overview</h3>
+          <div class="col-md-4">
+            <h5 class="text-center">Status</h5>
+            <div class="chart">
+              <canvas baseChart
+                [data]="pieChart1Data"
+                [labels]="pieChart1Labels"
+                [chartType]="pieChartType"
+                [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"
+                [colors]="pieChartColors"
+                [legend]="pieChartLegend">
+              </canvas>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h5 class="text-center">Latency</h5>
+            <div class="chart">
+              <canvas baseChart
+                [data]="pieChart2Data"
+                [labels]="pieChart2Labels"
+                [chartType]="pieChartType"
+                [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"
+                [colors]="pieChartColors"
+                [legend]="pieChartLegend">
+              </canvas>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <h5 class="text-center">Consistency</h5>
+            <div class="chart">
+              <canvas baseChart
+                [data]="pieChart3Data"
+                [labels]="pieChart3Labels"
+                [chartType]="pieChartType"
+                [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"
+                [colors]="pieChartColors"
+                [legend]="pieChartLegend">
+              </canvas>
+            </div>
+          </div>
+          <div class="col-md-12"><br></div>
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-header bg-primary-light text-white">
+                <h5>Add Service</h5>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="name" placeholder="My Service">
+                </div>
+                <div class="form-group">
+                  <label>Endpoint</label>
+                  <input type="text" class="form-control" [(ngModel)]="endpoint" placeholder="http://myservice.com">
+                </div>
+                <div class="form-group">
+                  <label>Up Codes</label>
+                  <input type="text" class="form-control" [(ngModel)]="upCodes" placeholder="200,302">
+                </div>
+                <div class="form-group">
+                  <label>Metadata</label>
+                  <input type="text" class="form-control" [(ngModel)]="metadata" placeholder="asia">
+                </div>
+                <p class="text-center text-danger">{{adderrormsg}}</p>
+                <p class="text-center text-success">{{addmsg}}</p>
+                <div class="text-center">
+                  <button class="btn btn-primary" (click)="create()">Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="card">
+            <div class="row form-group card-header bg-primary-light text-white" style="margin-left: 0;margin-right: 0;">
+              <div class="col-md-8">
+                <h4>Service List</h4>
+              </div>
+              <div class="col-md-4">
+                <input class="form-control" type="text" [(ngModel)]="search" placeholder="Search">
+              </div>
+            </div>
+            <table class="table table-hover">
+              <thead class="bg-light">
+                <tr>
+                  <th>Name</th>
+                  <th>Endpoint</th>
+                  <th>Metadata</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of servicelist  | filter:search | paginate: { itemsPerPage: 5, currentPage: p }"
+                  (click)="serviceinfo(row.id)">
+                  <td>{{row.name}}</td>
+                  <td><a href={{row.endpoint}}>{{row.endpoint}}</a></td>
+                  <td>{{row.metadata}}</td>
+                  <td>
+                    <i class="fa fa-check-circle text-success" *ngIf="row.status == 'UP'"></i>
+                    <i class="fa fa-times-circle text-danger" *ngIf="row.status == 'DOWN'"></i>
+                    {{row.status}}
+                  </td>
+                  <td><button class="btn btn-danger btn-sm" (click)="delete(row.id)">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row justify-content-center">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+            </div>
+          </div>
+          </div>
+        </div>
+        <!-- Table Section Ends -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Main Section Ends -->
