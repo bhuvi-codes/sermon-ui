@@ -21,6 +21,7 @@ FROM nginx:1.17.1-alpine
 COPY --from=sermon /app/sermon /
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /usr/src/app/dist/sermon-ui /usr/share/nginx/html
+COPY entrypoint.sh /
 
 ENV PORT "8081"
-CMD ["nginx", "&&","./sermon"]
+ENTRYPOINT ["./entrypoint.sh"]
