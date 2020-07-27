@@ -12,6 +12,7 @@ RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
 RUN mkdir -p /app
 WORKDIR /app
 RUN git clone https://github.com/avp-cloud/sermon.git
+WORKDIR /app/sermon
 RUN go mod download
 RUN go build ./
 
