@@ -25,6 +25,7 @@ export class AppComponent {
   metadata: string;
   adderrormsg: string;
   addmsg: string;
+  deleteerrormsg: string;
   search: string;
   p: number = 1;
   gmetric: string = "totalTime";
@@ -46,7 +47,7 @@ export class AppComponent {
       window.location.reload();
     }
     else {
-      this.errormsg = "Invalid Username or Password";
+      this.errormsg = "Invalid Username or Password, default creds: admin/password";
     }
   }
 
@@ -71,7 +72,7 @@ export class AppComponent {
         this.retrieve();
       },
       error => {
-        this.adderrormsg = error.statusText;
+        this.adderrormsg = error.error || error.statusText;
       },
     );
   }
@@ -95,9 +96,14 @@ export class AppComponent {
   // Delete deletes the selected service
   delete(id: number) {
     var url = environment.apiUrl + "/services/" + id;
-    this.httpobj.delete(url).subscribe(response => {
-      this.retrieve();
-    });
+    this.httpobj.delete(url).subscribe(
+      response => {
+        this.retrieve();
+      },
+      error => {
+        this.deleteerrormsg = error.error || error.statusText;
+      },
+    );
   }
 
   // Serivceinfo fetches the selected service details and initialises detail graph

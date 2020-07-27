@@ -237,6 +237,7 @@
                 <input class="form-control" type="text" [(ngModel)]="search" placeholder="Search">
               </div>
             </div>
+            <p class="text-center text-danger">{{deleteerrormsg}}</p>
             <table class="table table-hover">
               <thead class="bg-light">
                 <tr>
@@ -248,12 +249,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let row of servicelist  | filter:search | paginate: { itemsPerPage: 5, currentPage: p }"
-                  (click)="serviceinfo(row.id)">
-                  <td>{{row.name}}</td>
+                <tr *ngFor="let row of servicelist  | filter:search | paginate: { itemsPerPage: 5, currentPage: p }">
+                  <td (click)="serviceinfo(row.id)">{{row.name}}</td>
                   <td><a href={{row.endpoint}}>{{row.endpoint}}</a></td>
-                  <td>{{row.metadata}}</td>
-                  <td>
+                  <td (click)="serviceinfo(row.id)">{{row.metadata}}</td>
+                  <td (click)="serviceinfo(row.id)">
                     <i class="fa fa-check-circle text-success" *ngIf="row.status == 'UP'"></i>
                     <i class="fa fa-times-circle text-danger" *ngIf="row.status == 'DOWN'"></i>
                     {{row.status}}
